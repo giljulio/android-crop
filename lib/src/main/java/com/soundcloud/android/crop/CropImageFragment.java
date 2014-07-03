@@ -15,6 +15,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.soundcloud.android.crop.util.Log;
 
@@ -53,19 +56,18 @@ public class CropImageFragment extends MonitoredFragment {
     private CropCallbacks cropCallbacks;
 
     @Override
-    public void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
-        initViews();
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.crop__fragment_crop, null);
 
-        setupFromIntent();
-        if (rotateBitmap == null) {
-            return;
-        }
-        startCrop();
+        imageView = (CropImageView) rootView.findViewById(R.id.crop_image);
+
+        return rootView;
     }
 
-    private void initViews() {
-        imageView.context = getActivity();
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         imageView.setRecycler(new ImageViewTouchBase.Recycler() {
             @Override
             public void recycle(Bitmap b) {
@@ -73,6 +75,11 @@ public class CropImageFragment extends MonitoredFragment {
                 System.gc();
             }
         });
+
+        setupFromIntent();
+        if (rotateBitmap != null) {
+            startCrop();
+        }
     }
 
     private void setupFromIntent() {
@@ -94,7 +101,7 @@ public class CropImageFragment extends MonitoredFragment {
                 sampleSize = calculateBitmapSampleSize(sourceUri);
                 is = getActivity().getContentResolver().openInputStream(sourceUri);
                 BitmapFactory.Options option = new BitmapFactory.Options();
-                option.inSampleSize = sampleSize;
+                //option.inSampleSize = sampleSize;
                 rotateBitmap = new RotateBitmap(BitmapFactory.decodeStream(is, null, option), exifRotation);
             } catch (IOException e) {
                 Log.e("Error reading picture: " + e.getMessage(), e);
