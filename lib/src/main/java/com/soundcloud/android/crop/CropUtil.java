@@ -114,18 +114,18 @@ class CropUtil {
         return null;
     }
 
-    public static void startBackgroundJob(MonitoredActivity activity,
+    public static void startBackgroundJob(MonitoredFragment fragment,
             String title, String message, Runnable job, Handler handler) {
         // Make the progress dialog uncancelable, so that we can gurantee
         // the thread will be done before the activity getting destroyed
         ProgressDialog dialog = ProgressDialog.show(
-                activity, title, message, true, false);
-        new Thread(new BackgroundJob(activity, job, dialog, handler)).start();
+                fragment.getActivity(), title, message, true, false);
+        new Thread(new BackgroundJob(fragment, job, dialog, handler)).start();
     }
 
-    private static class BackgroundJob extends MonitoredActivity.LifeCycleAdapter implements Runnable {
+    private static class BackgroundJob extends MonitoredFragment.LifeCycleAdapter implements Runnable {
 
-        private final MonitoredActivity mActivity;
+        private final MonitoredFragment mActivity;
         private final ProgressDialog mDialog;
         private final Runnable mJob;
         private final Handler mHandler;
@@ -136,7 +136,7 @@ class CropUtil {
             }
         };
 
-        public BackgroundJob(MonitoredActivity activity, Runnable job,
+        public BackgroundJob(MonitoredFragment activity, Runnable job,
                              ProgressDialog dialog, Handler handler) {
             mActivity = activity;
             mDialog = dialog;
@@ -154,7 +154,7 @@ class CropUtil {
         }
 
         @Override
-        public void onActivityDestroyed(MonitoredActivity activity) {
+        public void onActivityDestroyed(MonitoredFragment activity) {
             // We get here only when the onDestroyed being called before
             // the mCleanupRunner. So, run it now and remove it from the queue
             mCleanupRunner.run();
@@ -162,12 +162,12 @@ class CropUtil {
         }
 
         @Override
-        public void onActivityStopped(MonitoredActivity activity) {
+        public void onActivityStopped(MonitoredFragment activity) {
             mDialog.hide();
         }
 
         @Override
-        public void onActivityStarted(MonitoredActivity activity) {
+        public void onActivityStarted(MonitoredFragment activity) {
             mDialog.show();
         }
     }

@@ -87,7 +87,7 @@ public class CropImageView extends ImageViewTouchBase {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         CropImageActivity cropImageActivity = (CropImageActivity) context;
-        if (cropImageActivity.isSaving()) {
+        if (cropImageActivity.cropImageFragment.isSaving()) {
             return false;
         }
 

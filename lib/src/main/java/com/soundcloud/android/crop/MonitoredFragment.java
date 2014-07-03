@@ -16,7 +16,7 @@
 
 package com.soundcloud.android.crop;
 
-import android.app.Activity;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 
 import java.util.ArrayList;
@@ -24,22 +24,22 @@ import java.util.ArrayList;
 /*
  * Modified from original in AOSP.
  */
-abstract class MonitoredActivity extends Activity {
+abstract class MonitoredFragment extends Fragment {
 
     private final ArrayList<LifeCycleListener> listeners = new ArrayList<LifeCycleListener>();
 
     public static interface LifeCycleListener {
-        public void onActivityCreated(MonitoredActivity activity);
-        public void onActivityDestroyed(MonitoredActivity activity);
-        public void onActivityStarted(MonitoredActivity activity);
-        public void onActivityStopped(MonitoredActivity activity);
+        public void onActivityCreated(MonitoredFragment activity);
+        public void onActivityDestroyed(MonitoredFragment activity);
+        public void onActivityStarted(MonitoredFragment activity);
+        public void onActivityStopped(MonitoredFragment activity);
     }
 
     public static class LifeCycleAdapter implements LifeCycleListener {
-        public void onActivityCreated(MonitoredActivity activity) {}
-        public void onActivityDestroyed(MonitoredActivity activity) {}
-        public void onActivityStarted(MonitoredActivity activity) {}
-        public void onActivityStopped(MonitoredActivity activity) {}
+        public void onActivityCreated(MonitoredFragment activity) {}
+        public void onActivityDestroyed(MonitoredFragment activity) {}
+        public void onActivityStarted(MonitoredFragment activity) {}
+        public void onActivityStopped(MonitoredFragment activity) {}
     }
 
     public void addLifeCycleListener(LifeCycleListener listener) {
@@ -52,7 +52,7 @@ abstract class MonitoredActivity extends Activity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         for (LifeCycleListener listener : listeners) {
             listener.onActivityCreated(this);
@@ -60,7 +60,7 @@ abstract class MonitoredActivity extends Activity {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         for (LifeCycleListener listener : listeners) {
             listener.onActivityDestroyed(this);
@@ -68,7 +68,7 @@ abstract class MonitoredActivity extends Activity {
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
         for (LifeCycleListener listener : listeners) {
             listener.onActivityStarted(this);
@@ -76,7 +76,7 @@ abstract class MonitoredActivity extends Activity {
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         for (LifeCycleListener listener : listeners) {
             listener.onActivityStopped(this);
